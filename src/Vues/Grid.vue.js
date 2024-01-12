@@ -30,7 +30,7 @@ export default class GridVue extends AbstractVue {
 
         this.cells = this.cells.map((row, x) => {
             return row.filter(x => x == null).map((cell, y) => {
-                switch (rng(0,3)) {
+                switch (rng(0, 1)) {
                     case 0:
                         return new Free(x, y);
                     case 1:
@@ -44,7 +44,7 @@ export default class GridVue extends AbstractVue {
         for (let x = 0; x < this.width; x++) {
             for(let y = 0; y < this.height; y++) {
                 const cell = this.cells[x][y];
-                const cellVue = new CellVue(cell);
+                const cellVue = new CellVue(cell, this.cellSize);
                 cellVue.render();
             }
         }
