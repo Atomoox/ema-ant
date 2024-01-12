@@ -1,9 +1,11 @@
-class Free extends CellModel {
+import CellModel from "./Cell.model.js";
+
+export default class Free extends CellModel {
     constructor(x, y, qty = 0.0) {
         super(x, y);
         this._qty = qty;
     }
 
-    GetQty() { return this._qty;  }
-    SetQty(newValue) { this._qty = newValue; }
+    getQty() { return this._qty;  }
+    setQty(newValue) { this._qty = newValue; }
 }

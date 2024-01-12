@@ -1,24 +1,39 @@
-class CellVue extends AbstractVue {
-    constructor(x, y, cellModel) {
+import AbstractVue from "./AbstractVue.js";
+
+export default class CellVue extends AbstractVue {
+    constructor(cellModel) {
         super();
-        this.x = x;
-        this.y = y;
+        this.cellModel = cellModel;
     }
 
     getAssetPerCellType() {
-        switch(this.cellModel.GetType()) {
-            case "Free":
-                return "free";
-            case "Obstacle":
-                return "/obstacle";
-            case "Start":
-                return "start";
-            default:
-                throw new Error("Unknown cell type");
+            switch(this.cellModel.getType()) {
+                case "Obstacle":
+                    return "./assets/tree.png";
+                default:
+                    return "./assets/grass.png";
+            }
+    }
+
+    getType() {
+        try {
+            return this.cellModel.getType();
+        } catch(ex) {
+            console.log(this.cellModel);
         }
+
     }
 
     render() {
+        const image = new Image();
+        image.src = this.getAssetPerCellType();
 
+        super.canvasContext.drawImage(
+            image,
+            this.cellModel.x * this.cellSize,
+            this.cellModel.y * this.cellSize,
+            this.cellSize,
+            this.cellSize
+        );
     }
 }
