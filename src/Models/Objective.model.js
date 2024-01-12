@@ -1,9 +1,11 @@
-class Objective extends CellModel {
+import CellModel from "./Cell.model.js";
+
+export default class Objective extends CellModel {
     constructor(x, y, qty = 1.0) {
         super(x, y);
         this._qty = qty;
     }
 
-    GetQty() { return this._qty; }
-    SetQty(newValue) { this._qty = newValue; }
+    getQty() { return this._qty; }
+    setQty(newValue) { this._qty = newValue; }
 }

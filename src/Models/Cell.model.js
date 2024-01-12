@@ -1,8 +1,8 @@
-class CellModel {
+export default class CellModel {
     constructor(x, y) {
         this.x = x;
         this.y = y;
     }
 
-    GetType() { return this.constructor.name; }
+    getType() { return this.constructor.name; }
 }
