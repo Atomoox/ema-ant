@@ -9,7 +9,6 @@ export default class GridVue extends AbstractVue {
 
     render() {
         const cells = this.getMap();
-        console.log(cells)
         for (let x = 0; x < this.width; x++) {
             for(let y = 0; y < this.height; y++) {
                 const cell = cells[x][y];
