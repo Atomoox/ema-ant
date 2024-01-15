@@ -3,10 +3,11 @@ import Picture from "../Models/Picture.model.js";
 import { rng } from "../utils.js";
 
 export default class CellVue extends AbstractVue {
-    constructor(cellModel, cellSize) {
+    constructor(cellModel, cellWidth, cellHeight) {
         super();
         this.cellModel = cellModel;
-        this.cellSize = cellSize;
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
     }
 
     getAssetPerCellType() {
@@ -43,10 +44,10 @@ export default class CellVue extends AbstractVue {
                 picture.y,
                 picture.height,
                 picture.lenght,
-                this.cellModel.x * this.cellSize,
-                this.cellModel.y * this.cellSize,
-                this.cellSize,
-                this.cellSize
+                this.cellModel.y * this.cellHeight,
+                this.cellModel.x * this.cellWidth,
+                this.cellHeight,
+                this.cellWidth
             );
         })
     }
