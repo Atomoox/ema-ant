@@ -1,5 +1,7 @@
 import AbstractVue from './AbstractVue.js';
 import CellVue from './Cell.vue.js';
+import Free from './../Models/Free.model.js';
+import Obstacle from './../Models/Obstacle.model.js';
 
 export default class GridVue extends AbstractVue {
     constructor({
@@ -49,8 +51,17 @@ export default class GridVue extends AbstractVue {
     render() {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
-        this.canvasContext.fillStyle = "rgb(168, 124, 124)";
-        this.canvasContext.fillRect(0, 0, this.width, this.height);
+        
+        const background = new Image();
+        background.src = "./assets/grass.png";
+
+        Promise.all([
+            new Promise( (resolve) => {background.addEventListener('load', () => { resolve();}); })
+        ])
+        .then(() => {
+            this.canvasContext.drawImage(background, 0, 0, 16, 16, 0, 0, this.width, this.height);
+        });
+
         
         for (let x = 0; x < this.cells.length; x++) {
             for(let y = 0; y < this.cells[x].length; y++) {
