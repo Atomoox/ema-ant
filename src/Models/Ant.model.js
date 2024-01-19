@@ -9,17 +9,20 @@ export default class Ant {
         this.getNeightoors = getNeightbors;
         this.path = [];
         this.explorationRate = Math.random();
+        this.hasFood = false;
         this.pheromoneRate = Math.random();
 
         this.forgetPath = this.forgetPath.bind(this);
     }
 
     move() {
-        const { neightbor, proba } = this.chooseNextMove();
+        const { neightbor, proba } = this._chooseNextMove();
+        console.log()
         this.path.push(neightbor);
+        return neightbor;
     }
 
-    chooseNextMove() {
+    _chooseNextMove() {
         const neightbors = this.getNeightoors();
 
         const probSum = neightbors.reduce((acc, neightbor) => acc + this.explorationRate + neightbor.getQty(), 0);
