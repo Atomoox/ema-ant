@@ -1,6 +1,7 @@
 import GridVue from './Vues/Grid.vue.js';
 import Controller from "./Controllers/Controller.js";
-import Environement from "./Models/Environment.model.js";
+import Environment from "./Models/Environment.model.js";
+import AntVue from "./Vues/Ant.vue.js";
 
 class App {
 
@@ -12,12 +13,21 @@ class App {
             cellColumns: 20
         });
 
-        const controller = new Controller({
-            renderGrid: gridVue.render,
+        const antVue = new AntVue({
+            cellWidth: 64,
+            cellHeight: 64
         });
 
-        const environment = new Environement({
-            updateGrid: controller._renderGrid,
+        const controller = new Controller({
+            renderGrid: gridVue.render,
+            renderAnts: antVue.render,
+            clearAnts: antVue.clearCurrentAnt
+        });
+
+        const environment = new Environment({
+            updateGrid: controller.renderGrid,
+            updateAnts: controller.renderAnts,
+            clearAnts: controller.clearAnts,
             width: 30,
             height: 30
         });

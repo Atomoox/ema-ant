@@ -4,9 +4,14 @@ export default class Controller {
     state = 'stopped';
 
     constructor({
-        renderGrid
+        renderGrid,
+        renderAnts,
+        clearAnts
     }) {
-        this._renderGrid = renderGrid;
+        this.renderGrid = renderGrid;
+        this.renderAnts = renderAnts;
+        this.clearAnts = clearAnts;
+
         this.getMap = this.getMap.bind(this);
         this.getWidth = this.getWidth.bind(this);
         this.getHeight = this.getHeight.bind(this);

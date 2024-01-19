@@ -15,6 +15,7 @@ export default class GridVue extends AbstractVue {
         this.render = this.render.bind(this);
     }
 
+
     render(cells) {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
