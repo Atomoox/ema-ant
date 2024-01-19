@@ -1,28 +1,26 @@
-import {rng} from "../utils.js";
-import Start from "../Models/Start.model.js";
-import Free from "../Models/Free.model.js";
-import Obstacle from "../Models/Obstacle.model.js";
-import Ant from "../Models/Ant.model.js";
+import {rng, pause} from "../utils.js";
+import Start from "./Start.model.js";
+import Free from "./Free.model.js";
+import Obstacle from "./Obstacle.model.js";
+import Ant from "./Ant.model.js";
 
-export default class GameController {
+export default class Environment {
     state = 'stopped';
 
     constructor({
         width = 10,
         height = 10,
+        updateGrid
     }) {
+        this._updateGrid = updateGrid;
         this.width = width;
         this.height = height;
         this.cells = new Array(this.width).fill(null).map(() => new Array(this.height).fill(null));
         this.startX = 0;
         this.startY = 0;
-
-        this.getMap = this.getMap.bind(this);
-        this.getWidth = this.getWidth.bind(this);
-        this.getHeight = this.getHeight.bind(this);
     }
 
-    _generateRandomMap() {
+    _generateMap() {
         this.startX = rng(0, this.width);
         this.startY = rng(0, this.height);
 
@@ -31,17 +29,36 @@ export default class GameController {
             y: this.startY
         });
 
-        this.cells = this.cells.map((row, x) => {
-            return row.filter(x => x == null).map((cell, y) => {
-                switch (rng(0, 3)) {
+        this.cells = [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1],
+            [1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ].map((row, x) => {
+            return row.map((column, y) => {
+                switch (column) {
                     case 0:
                         return new Free(x, y);
                     case 1:
                         return new Obstacle(x, y);
                 }
-            });
+            })
         });
-    };
+    }
 
     _spawnAnts() {
         this.ants = [];
@@ -52,18 +69,6 @@ export default class GameController {
                 getNeightbors: this.getNeighbors,
             }));
         }
-    }
-
-    getWidth() {
-        return this.width;
-    }
-
-    getHeight() {
-        return this.height;
-    }
-
-    getMap() {
-        return this.cells;
     }
 
     getCell(x, y) {
@@ -93,8 +98,9 @@ export default class GameController {
 
     startGame() {
         this.state = 'started';
-        this._generateRandomMap();
+        this._generateMap();
         this._spawnAnts();
+        this.gameLoop();
     }
 
     changeGameState() {
@@ -105,9 +111,11 @@ export default class GameController {
         }
     }
 
-    gameLoop() {
+    async gameLoop() {
         while (this.state === 'started') {
             this.ants.forEach(ant => ant.move());
+            this._updateGrid(this.cells);
+            await pause(1000 / 60);
         }
     }
 }

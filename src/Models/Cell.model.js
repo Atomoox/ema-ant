@@ -4,5 +4,6 @@ export default class CellModel {
         this.y = y;
     }
 
-    getType() { return this.constructor.name.toLowerCase(); }
+    getType() { return this.constructor.name; }
 }
+//model -> play -> MAJ env -> Binding
