@@ -18,8 +18,17 @@ export default class GridVue extends AbstractVue {
     render(cells) {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
-        this.canvasContext.fillStyle = "rgb(168, 124, 124)";
-        this.canvasContext.fillRect(0, 0, this.width, this.height);
+        
+        const background = new Image();
+        background.src = "./assets/grass.png";
+
+        Promise.all([
+            new Promise( (resolve) => {background.addEventListener('load', () => { resolve();}); })
+        ])
+        .then(() => {
+            this.canvasContext.drawImage(background, 0, 0, 16, 16, 0, 0, this.width, this.height);
+        });
+
         
         for (let x = 0; x < cells.length; x++) {
             for(let y = 0; y < cells[x].length; y++) {

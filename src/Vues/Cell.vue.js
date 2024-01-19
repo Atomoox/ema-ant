@@ -14,8 +14,12 @@ export default class CellVue extends AbstractVue {
         switch(this.cellModel.getType()) {
             case "Obstacle":
                 return new Picture("./assets/tree.png", 0, 0, 160, 160);
+            
+            case "Free":
+                return new Picture("./assets/grass.png", 8 * 16, 3 * 16, 16, 16);
+
             default:
-                return new Picture("./assets/grass.png", rng(0, 15) * 16, rng(0, 15) * 16, 16, 16);
+                return null;
         }
     }
 

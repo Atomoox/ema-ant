@@ -6,4 +6,3 @@ export default class CellModel {
 
     getType() { return this.constructor.name; }
 }
-//model -> play -> MAJ env -> Binding
