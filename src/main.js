@@ -6,7 +6,13 @@ class App {
         width: 30,
         height: 30
     });
-    static GridVue = new GridVue(this.GameController.getMap, this.GameController.getWidth, this.GameController.getHeight);
+  
+    static GridVue = new GridVue({
+        width: 800,
+        height: 800,
+        cellLines: 20,
+        cellColumns: 20
+    });
 
     static run() {
         this.GameController.startGame();
