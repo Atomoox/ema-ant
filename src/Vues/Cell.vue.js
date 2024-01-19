@@ -20,12 +20,7 @@ export default class CellVue extends AbstractVue {
     }
 
     getType() {
-        try {
-            return this.cellModel.getType();
-        } catch(ex) {
-            console.log(this.cellModel);
-        }
-
+        return this.cellModel.getType();
     }
 
     render() {

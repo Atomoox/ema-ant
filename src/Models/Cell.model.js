@@ -4,5 +4,5 @@ export default class CellModel {
         this.y = y;
     }
 
-    getType() { return this.constructor.name; }
+    getType() { return this.constructor.name.toLowerCase(); }
 }
