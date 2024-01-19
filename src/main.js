@@ -72,8 +72,8 @@ class App {
         });
 
         const antVue = new AntVue({
-            cellWidth: 64,
-            cellHeight: 64
+            cellWidth: 800 / 20,
+            cellHeight: 800 / 20,
         });
 
         const controller = new Controller({

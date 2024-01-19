@@ -1,3 +1,5 @@
+import {rng} from "../utils.js";
+
 const _fps = 60;
 const _speed = 10;
 
@@ -13,7 +15,7 @@ export default class Ant {
         this.direction = 0;
         this.path = [];
         this.current = {x: x, y: y};
-        this.explorationRate = 0.9;
+        this.explorationRate = Math.random();
         this.hasFood = false;
         this.pheromoneRate = Math.random();
 
@@ -21,6 +23,7 @@ export default class Ant {
     }
 
     _getDirection() {
+        console.log(this.current)
         if (this.x < this.current.x) {
             return 0;
         } else if (this.x > this.current.x) {
@@ -46,11 +49,12 @@ export default class Ant {
     }
 
     move() {
-
         let dx = Math.cos(this.direction);
-        let dy = Math.sin(this.direction) * -1;
+        let dy = Math.sin(this.direction);
         this.x += dx * _speed / _fps;
         this.y += dy * _speed / _fps;
+
+        console.log(`Moving from ${this.x}, ${this.y} to ${this.current.x}, ${this.current.y}`)
 
         if (this._isAntOverCell()) {
             this.x = this.current.x;
@@ -59,12 +63,18 @@ export default class Ant {
             this.path.push(neightbor);
             this.current = neightbor;
             this.direction = this._getDirection();
+            console.log('Switching direction');
+            console.log(`From: ${this.x}, ${this.y} to ${this.current.x}, ${this.current.y}`);
+        }
+
+        if (this.current.getType() === 'Objective') {
+            this.hasFood = true;
+            console.log('Found food');
         }
     }
 
     _chooseNextMove() {
-        const neightbors = this.getNeightoors(this.x, this.y).filter(cell => !this.path.includes(cell));
-
+        let neightbors = this.getNeightoors(this.x, this.y);
         const probSum = neightbors.reduce((acc, neightbor) => acc + this.explorationRate + neightbor.getQty(), 0);
         const probas = neightbors.map(neightbor => ({
             neightbor,
@@ -74,9 +84,11 @@ export default class Ant {
         return probas.reduce((acc, { neightbor, proba }) => {
             if (proba > acc.proba) {
                 return { neightbor, proba };
+            } else if (proba === acc.proba && Math.random() > 0.5) {
+                return { neightbor, proba };
             }
             return acc;
-        }, { proba: 0 });
+        }, { proba: 0 })
     }
 
     spreadPheromone() {

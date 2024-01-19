@@ -90,7 +90,6 @@ export default class Environment {
     }
 
     getCell(x, y) {
-        console.log(this.cells.length, x, y)
         return this.cells[x][y];
     }
 

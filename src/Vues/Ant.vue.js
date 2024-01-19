@@ -28,14 +28,14 @@ export default class AntVue extends AbstractVue {
 
             this.canvasContext.drawImage(
                 this.image,
-                ant.x,
-                ant.y,
+                0,
+                0,
                 64,
                 64,
-                64,
-                64,
-                this.cellWidth,
-                this.cellHeight
+                (ant.y + 1)  * 800 / 20,
+                ant.x * 800 / 20,
+                this.cellHeight,
+                this.cellWidth
             );
         })
     }
