@@ -6,26 +6,10 @@ export default class Controller {
     constructor({
         renderGrid,
         renderAnts,
-        clearAnts
+        clearAnts,
     }) {
         this.renderGrid = renderGrid;
         this.renderAnts = renderAnts;
         this.clearAnts = clearAnts;
-
-        this.getMap = this.getMap.bind(this);
-        this.getWidth = this.getWidth.bind(this);
-        this.getHeight = this.getHeight.bind(this);
-    }
-
-    getWidth() {
-        return this.width;
-    }
-
-    getHeight() {
-        return this.height;
-    }
-
-    getMap() {
-        return this.cells;
     }
 }

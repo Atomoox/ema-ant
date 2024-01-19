@@ -1,4 +1,5 @@
 import {rng} from "../utils.js";
+import {astar} from "../Controllers/AStarController.js";
 
 const _fps = 60;
 const _speed = 10;
@@ -7,13 +8,16 @@ export default class Ant {
     constructor({
         x = 0,
         y = 0,
-        getNeightbors = () => [],
+        getNeightbors,
+        getCells
     }) {
         this.x = x;
         this.y = y;
         this.getNeightoors = getNeightbors;
+        this.getCells = getCells;
         this.direction = 0;
-        this.path = [];
+        this.path = [{x, y}];
+        this.backPath = [];
         this.current = {x: x, y: y};
         this.explorationRate = Math.random();
         this.hasFood = false;
@@ -54,22 +58,57 @@ export default class Ant {
         this.x += dx * _speed / _fps;
         this.y += dy * _speed / _fps;
 
-        console.log(`Moving from ${this.x}, ${this.y} to ${this.current.x}, ${this.current.y}`)
-
         if (this._isAntOverCell()) {
             this.x = this.current.x;
             this.y = this.current.y;
-            const { neightbor, proba } = this._chooseNextMove();
+        }
+
+        if (this.hasFood) {
+            return this.handleBackTracking();
+        }
+
+        return this.handleExploration();
+    }
+
+    handleBackTracking() {
+        if (this._isAntOverCell()) {
+            this.current = this.backPath.shift();
+            if (this.current) {
+                this.direction = this._getDirection();
+            }
+        }
+
+        if (this.current === undefined) {
+            this.hasFood = false;
+            this.current = this.path.shift();
+            this.forgetPath();
+            return;
+        }
+        this.direction = this._getDirection();
+    }
+
+    handleExploration() {
+        if (this._isAntOverCell()) {
+            const { neightbor } = this._chooseNextMove();
             this.path.push(neightbor);
             this.current = neightbor;
             this.direction = this._getDirection();
-            console.log('Switching direction');
-            console.log(`From: ${this.x}, ${this.y} to ${this.current.x}, ${this.current.y}`);
         }
 
         if (this.current.getType() === 'Objective') {
             this.hasFood = true;
-            console.log('Found food');
+            this.backPath = astar(
+                this.getCells(),
+                this.current,
+                this.path[0],
+                this.path
+            )
+
+            this.backPath.push(this.path[0]);
+            const allCells = this.getCells();
+            this.backPath.forEach(cell => {
+                allCells[cell.x][cell.y].setIsSelected(true);
+            })
         }
     }
 

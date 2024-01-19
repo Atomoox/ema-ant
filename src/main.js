@@ -79,7 +79,7 @@ class App {
         const controller = new Controller({
             renderGrid: gridVue.render,
             renderAnts: antVue.render,
-            clearAnts: antVue.clearCurrentAnt
+            clearAnts: antVue.clearCurrentAnt,
         });
 
         const environment = new Environment({
