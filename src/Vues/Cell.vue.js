@@ -8,7 +8,7 @@ export default class CellVue extends AbstractVue {
 
     getAssetPerCellType() {
             switch(this.cellModel.getType()) {
-                case "Obstacle":
+                case "obstacle":
                     return "./assets/tree.png";
                 default:
                     return "./assets/grass.png";
@@ -16,12 +16,7 @@ export default class CellVue extends AbstractVue {
     }
 
     getType() {
-        try {
-            return this.cellModel.getType();
-        } catch(ex) {
-            console.log(this.cellModel);
-        }
-
+        return this.cellModel.getType();
     }
 
     render() {
