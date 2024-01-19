@@ -21,7 +21,12 @@ export default class CellVue extends AbstractVue {
             
             case "Free":
                 return [
-                    new Picture(this.images.grass, rng(0, 15) * 16, rng(0, 15) * 16, 16, 16)
+                    new Picture(this.images.grass, 
+                        (8 + (this.cellModel.x * this.cellModel.y) % 7) * 16,
+                        ((this.cellModel.x * this.cellModel.y) % 15) * 16,
+                        16,
+                        16
+                    )
                 ];
 
             case "Objective":
