@@ -10,14 +10,21 @@ export default class Environment {
     constructor({
         width = 10,
         height = 10,
-        updateGrid
+        updateGrid,
+        updateAnts,
+        clearAnts,
     }) {
         this._updateGrid = updateGrid;
+        this._updateAnts = updateAnts;
+        this._clearAnts = clearAnts;
+
         this.width = width;
         this.height = height;
         this.cells = new Array(this.width).fill(null).map(() => new Array(this.height).fill(null));
         this.startX = 0;
         this.startY = 0;
+
+        this.getNeighbors = this.getNeighbors.bind(this);
     }
 
     _generateMap() {
@@ -93,7 +100,8 @@ export default class Environment {
         if (y < this.height - 1) {
             neighbors.push(this.getCell(x, y + 1));
         }
-        return neighbors.filter(cell => cell.getType() !== 'obstacle');
+
+        return neighbors.filter(cell => cell.getType() !== 'Obstacle');
     }
 
     startGame() {
@@ -112,10 +120,13 @@ export default class Environment {
     }
 
     async gameLoop() {
+        this._updateGrid(this.cells);
         while (this.state === 'started') {
-            this.ants.forEach(ant => ant.move());
-            this._updateGrid(this.cells);
+            this._clearAnts(this.ants);
+            this._updateAnts(this.ants);
             await pause(1000 / 60);
+            this.ants.forEach(ant => ant.move());
+
         }
     }
 }
