@@ -9,14 +9,14 @@ export default class Ant {
         this.getNeightoors = getNeightbors;
         this.path = [];
         this.explorationRate = Math.random();
+        this.pheromoneRate = Math.random();
 
         this.forgetPath = this.forgetPath.bind(this);
     }
 
     move() {
         const { neightbor, proba } = this.chooseNextMove();
-        console.log('move', this.x, this.y, '->', neightbor.x, neightbor.y, 'proba', proba);
-        this.path.push(randomNeightbor);
+        this.path.push(neightbor);
     }
 
     chooseNextMove() {
@@ -34,6 +34,13 @@ export default class Ant {
             }
             return acc;
         }, { proba: 0 });
+    }
+
+    spreadPheromone() {
+        const amount = pheromoneRate / this.path.length;
+        this.path.forEach(cell => {
+            cell.addQty(amount);
+        })
     }
 
     forgetPath() { this.path = []; }

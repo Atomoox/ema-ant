@@ -2,9 +2,11 @@ import {rng} from "../utils.js";
 import Start from "../Models/Start.model.js";
 import Free from "../Models/Free.model.js";
 import Obstacle from "../Models/Obstacle.model.js";
+import Ant from "../Models/Ant.model.js";
 
 export default class GameController {
     state = 'stopped';
+
     constructor({
         width = 10,
         height = 10,
@@ -31,7 +33,7 @@ export default class GameController {
 
         this.cells = this.cells.map((row, x) => {
             return row.filter(x => x == null).map((cell, y) => {
-                switch (rng(0,3)) {
+                switch (rng(0, 3)) {
                     case 0:
                         return new Free(x, y);
                     case 1:
@@ -40,6 +42,17 @@ export default class GameController {
             });
         });
     };
+
+    _spawnAnts() {
+        this.ants = [];
+        for (let i = 0; i < 10; i++) {
+            this.ants.push(new Ant({
+                x: this.startX,
+                y: this.startY,
+                getNeightbors: this.getNeighbors,
+            }));
+        }
+    }
 
     getWidth() {
         return this.width;
@@ -81,5 +94,20 @@ export default class GameController {
     startGame() {
         this.state = 'started';
         this._generateRandomMap();
+        this._spawnAnts();
+    }
+
+    changeGameState() {
+        if (this.state === 'started') {
+            this.state = 'stopped';
+        } else {
+            this.state = 'started';
+        }
+    }
+
+    gameLoop() {
+        while (this.state === 'started') {
+            this.ants.forEach(ant => ant.move());
+        }
     }
 }

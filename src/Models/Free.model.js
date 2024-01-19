@@ -8,4 +8,6 @@ export default class Free extends CellModel {
 
     getQty() { return this._qty;  }
     setQty(newValue) { this._qty = newValue; }
+
+    addQty(amount) { this._qty += amount; }
 }
