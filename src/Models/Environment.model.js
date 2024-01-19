@@ -26,6 +26,11 @@ export default class Environment {
         this.startY = 0;
 
         this.getNeighbors = this.getNeighbors.bind(this);
+        this.getCells = this.getCells.bind(this);
+    }
+
+    getCells() {
+        return this.cells;
     }
 
     _generateMap() {
@@ -71,6 +76,7 @@ export default class Environment {
                 x: this.startX,
                 y: this.startY,
                 getNeightbors: this.getNeighbors,
+                getCells: this.getCells
             }));
         }
     }

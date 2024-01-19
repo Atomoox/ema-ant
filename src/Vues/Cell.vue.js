@@ -46,6 +46,10 @@ export default class CellVue extends AbstractVue {
     render() {
         let pictures = this.getAssetPerCellType();
 
+        if (this.cellModel.isSelected) {
+            this.canvasContext.fillRect(this.cellModel.y * this.cellHeight, this.cellModel.x * this.cellWidth, this.cellWidth, this.cellHeight);
+        }
+
         pictures.forEach(picture => {
                 this.canvasContext.drawImage(
                     picture.image,
