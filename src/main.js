@@ -1,25 +1,31 @@
 import GridVue from './Vues/Grid.vue.js';
-import GameController from "./Controllers/GameController.js";
+import Controller from "./Controllers/Controller.js";
+import Environement from "./Models/Environment.model.js";
 
 class App {
-    static GameController = new GameController({
-        width: 30,
-        height: 30
-    });
-  
-    static GridVue = new GridVue({
-        width: 800,
-        height: 800,
-        cellLines: 20,
-        cellColumns: 20
-    });
 
-    static run() {
-        this.GameController.startGame();
-        this.GridVue.render();
+    static async run() {
+        const gridVue = new GridVue({
+            width: 800,
+            height: 800,
+            cellLines: 20,
+            cellColumns: 20
+        });
+
+        const controller = new Controller({
+            renderGrid: gridVue.render,
+        });
+
+        const environment = new Environement({
+            updateGrid: controller._renderGrid,
+            width: 30,
+            height: 30
+        });
+
+        await environment.startGame();
     }
 };
 
 (async () => {
-    App.run();
+    await App.run();
 })();
