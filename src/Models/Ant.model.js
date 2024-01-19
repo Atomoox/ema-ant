@@ -10,9 +10,10 @@ export default class Ant {
         this.x = x;
         this.y = y;
         this.getNeightoors = getNeightbors;
+        this.direction = 0;
         this.path = [];
         this.current = {x: x, y: y};
-        this.explorationRate = Math.random();
+        this.explorationRate = 0.9;
         this.hasFood = false;
         this.pheromoneRate = Math.random();
 
@@ -32,27 +33,37 @@ export default class Ant {
     }
 
     _isAntOverCell() {
-        return this.x > this.current.x && this.x < this.current.x + 1 && this.y > this.current.y && this.y < this.current.y + 1;
+        switch (this.direction) {
+            case 0:
+                return this.x >= this.current.x;
+            case Math.PI:
+                return this.x <= this.current.x;
+            case Math.PI / 2:
+                return this.y >= this.current.y;
+            case Math.PI * 3 / 2:
+                return this.y <= this.current.y;
+        }
     }
 
     move() {
+
+        let dx = Math.cos(this.direction);
+        let dy = Math.sin(this.direction) * -1;
+        this.x += dx * _speed / _fps;
+        this.y += dy * _speed / _fps;
+
         if (this._isAntOverCell()) {
-            console.log(this.x, this.y, this.current.x, this.current.y)
+            this.x = this.current.x;
+            this.y = this.current.y;
             const { neightbor, proba } = this._chooseNextMove();
             this.path.push(neightbor);
             this.current = neightbor;
+            this.direction = this._getDirection();
         }
-
-        const direction = this._getDirection();
-
-        let dx = Math.cos(direction);
-        let dy = Math.sin(direction) * -1;
-        this.x += dx * _speed / _fps;
-        this.y += dy * _speed / _fps;
     }
 
     _chooseNextMove() {
-        const neightbors = this.getNeightoors(this.x, this.y);
+        const neightbors = this.getNeightoors(this.x, this.y).filter(cell => !this.path.includes(cell));
 
         const probSum = neightbors.reduce((acc, neightbor) => acc + this.explorationRate + neightbor.getQty(), 0);
         const probas = neightbors.map(neightbor => ({

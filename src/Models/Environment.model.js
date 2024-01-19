@@ -66,7 +66,7 @@ export default class Environment {
 
     _spawnAnts() {
         this.ants = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 1; i++) {
             this.ants.push(new Ant({
                 x: this.startX,
                 y: this.startY,
@@ -90,6 +90,7 @@ export default class Environment {
     }
 
     getCell(x, y) {
+        console.log(this.cells.length, x, y)
         return this.cells[x][y];
     }
 
@@ -112,7 +113,7 @@ export default class Environment {
             neighbors.push(this.getCell(x, y + 1));
         }
 
-        return neighbors.filter(cell => cell.getType() !== 'Obstacle');
+        return neighbors.filter(cell => cell.getType() !== 'Obstacle' && cell.getType() !== 'Start');
     }
 
     startGame() {
@@ -132,9 +133,8 @@ export default class Environment {
     }
 
     async gameLoop() {
-        this._updateGrid(this.cells);
         while (this.state === 'started') {
-            this._clearAnts(this.ants);
+            this._updateGrid(this.cells);
             this._updateAnts(this.ants);
             await pause(1000 / 60);
             this.ants.forEach(ant => ant.move());
