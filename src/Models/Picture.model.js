@@ -1,6 +1,6 @@
 export default class Picture {
-    constructor(src, x, y, width, height) {
-        this.src = src;
+    constructor(image, x, y, width, height) {
+        this.image = image;
         this.x = x;
         this.y = y;
         this.width = width;

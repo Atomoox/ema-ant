@@ -28,7 +28,7 @@ export default class AntVue extends AbstractVue {
 
             this.canvasContext.drawImage(
                 this.image,
-                ant.x * this.width / cells.length,
+                ant.x,
                 ant.y,
                 64,
                 64,
