@@ -1,8 +1,4 @@
 export function astar(matrix, start, destination, allowedCoordinates) {
-    console.log(matrix);
-    console.log(start);
-    console.log(destination);
-    console.log(allowedCoordinates);
     class Node {
         constructor(x, y, g = 0, h = 0) {
             this.x = x;
@@ -38,8 +34,6 @@ export function astar(matrix, start, destination, allowedCoordinates) {
     const openList = [startNode];
     const closedList = [];
 
-    console.log(openList)
-
     while (openList.length > 0) {
         // Find the node with the lowest total cost in the open list
         const currentNode = openList.reduce((minNode, node) => (node.f < minNode.f ? node : minNode), openList[0]);
@@ -52,7 +46,6 @@ export function astar(matrix, start, destination, allowedCoordinates) {
 
         // Check if the current node is the destination
         if (currentNode.x === destinationNode.x && currentNode.y === destinationNode.y) {
-            console.log('FOUND')
             const path = [];
             let current = currentNode;
             while (current !== null) {
@@ -98,6 +91,5 @@ export function astar(matrix, start, destination, allowedCoordinates) {
             }
         }
     }
-    console.log('RETURNING NULL :D')
     return null;
 }

@@ -60,15 +60,15 @@ export default class CellVue extends AbstractVue {
                     picture.height,
                     this.cellModel.y * this.cellHeight,
                     this.cellModel.x * this.cellWidth,
-                    this.cellHeight,
-                    this.cellWidth
+                    this.cellHeight * (this.getType() === "Objective" ? this.cellModel.getQty() : 1),
+                    this.cellWidth * (this.getType() === "Objective" ? this.cellModel.getQty() : 1)
                 );
         });
 
         if (this.getType() === "Free") {
             this.canvasContext.fillText(
-                (Math.round(this.cellModel.getQty() * 100) / 100).toFixed(2),
-                this.cellModel.y * this.cellHeight + this.cellHeight / 4,
+                (Math.round(this.cellModel.getQty() * 1000) / 1000).toFixed(3),
+                this.cellModel.y * this.cellHeight + this.cellHeight / 5,
                 this.cellModel.x * this.cellWidth + this.cellWidth / 2
             );
         }

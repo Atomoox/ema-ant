@@ -134,6 +134,7 @@ export default class Environment {
             this.state = 'stopped';
         } else {
             this.state = 'started';
+            this.gameLoop();
         }
     }
 
