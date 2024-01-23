@@ -1,7 +1,5 @@
 import AbstractVue from './AbstractVue.js';
 import CellVue from './Cell.vue.js';
-import Obstacle from "../Models/Obstacle.model.js";
-import Free from "../Models/Free.model.js";
 
 export default class GridVue extends AbstractVue {
     constructor({

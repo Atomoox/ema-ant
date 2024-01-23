@@ -2,7 +2,6 @@ import GridVue from './Vues/Grid.vue.js';
 import Controller from "./Controllers/Controller.js";
 import Environment from "./Models/Environment.model.js";
 import AntVue from "./Vues/Ant.vue.js";
-import Picture from "./Models/Picture.model.js";
 import {rng, waitForImageToLoad} from "./utils.js";
 
 class App {
@@ -58,7 +57,7 @@ class App {
         }
     }
 
-    static async run() {
+    static async init() {
         const images = await this.loadImages();
 
         const gridVue = new GridVue({
@@ -66,7 +65,7 @@ class App {
             height: 800,
             cellLines: 20,
             cellColumns: 20,
-            images
+            images: images
         });
 
         const antVue = new AntVue({
@@ -80,18 +79,19 @@ class App {
             clearAnts: antVue.clearCurrentAnt,
         });
 
-        const environment = new Environment({
+        environment = new Environment({
             updateGrid: controller.renderGrid,
             updateAnts: controller.renderAnts,
             clearAnts: controller.clearAnts,
-            width: 30,
-            height: 30
+            width: 20,
+            height: 20
         });
 
         await environment.init();
     }
 };
 
-(async () => {
-    await App.run();
-})();
+let btnStart = document.getElementById("start");
+btnStart.addEventListener('click', () => {
+    
+})

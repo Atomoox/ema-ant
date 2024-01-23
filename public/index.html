@@ -3,13 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>ANT GAME</title>
-    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="./styles/index.css">
 </head>
 <body>
-    <div>
-        Timer
+    <div class="box">
+        <div id="menu">
+            <div id="timer">
+                00:00:00
+            </div>
+
+            <div>
+                <input type="button" id="start" value="Start">
+                <button id="phero" type="button">Phéromones</button>
+            </div>
+        </div>
+
+        <div id="map">
+            <canvas id="master_canvas" width="800" height="800"></canvas>
+        </div>
     </div>
-    <canvas id="master_canvas" width="800" height="800"></canvas>
+
     <script type="module" src="js/main.js"></script>
+
+    <style>
+        body {
+            background-color: rgb(120, 148, 97);
+        }
+
+        .box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #master_canvas {
+            border-width: 10px;
+            border-radius: 20px;
+            border-style: solid;
+            border-color: rgb(41, 75, 41);
+        }
+    </style>
 </body>
 </html>

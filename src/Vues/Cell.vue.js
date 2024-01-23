@@ -5,14 +5,14 @@ import { rng } from "../utils.js";
 export default class CellVue extends AbstractVue {
     constructor(cellModel, images, cellWidth, cellHeight) {
         super();
-        this.images = images;
         this.cellModel = cellModel;
+        this.images = images;
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
     }
 
     getAssetPerCellType() {
-        switch(this.cellModel.getType()) {
+        switch(this.getType()) {
             case "Obstacle":
                 return [
                     new Picture(this.images.shadow, 46, 94, 92, 60),
@@ -51,12 +51,6 @@ export default class CellVue extends AbstractVue {
     render() {
         let pictures = this.getAssetPerCellType();
 
-        if (this.cellModel.isSelected) {
-            this.canvasContext.fillRect(this.cellModel.y * this.cellHeight, this.cellModel.x * this.cellWidth, this.cellWidth, this.cellHeight);
-        }
-
-        let qty = 1;
-
         pictures.forEach(picture => {
                 this.canvasContext.drawImage(
                     picture.image,
@@ -66,13 +60,18 @@ export default class CellVue extends AbstractVue {
                     picture.height,
                     this.cellModel.y * this.cellHeight,
                     this.cellModel.x * this.cellWidth,
-                    this.cellHeight,
-                    this.cellWidth
+                    this.cellHeight * (this.getType() === "Objective" ? this.cellModel.getQty() : 1),
+                    this.cellWidth * (this.getType() === "Objective" ? this.cellModel.getQty() : 1)
                 );
         });
 
-        if (this.cellModel.getType() === "Free") {
-            this.canvasContext.fillText(this.cellModel.getQty().toFixed(2), this.cellModel.y * this.cellHeight, this.cellModel.x * this.cellHeight);
+        if (this.getType() === "Free") {
+            this.canvasContext.fillText(
+                (Math.round(this.cellModel.getQty() * 1000) / 1000).toFixed(3),
+                this.cellModel.y * this.cellHeight + this.cellHeight / 5,
+                this.cellModel.x * this.cellWidth + this.cellWidth / 2
+            );
+
         }
     }
 }

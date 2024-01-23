@@ -8,8 +8,8 @@ export default class AntVue extends AbstractVue {
         this.image = new Image();
         this.image.src = './assets/ant.png';
 
-        this.cellWidth = 32;
-        this.cellHeight = 32;
+        this.cellWidth = cellWidth;
+        this.cellHeight = cellHeight;
 
         this.render = this.render.bind(this);
         this.clearCurrentAnt = this.clearCurrentAnt.bind(this);
@@ -32,10 +32,10 @@ export default class AntVue extends AbstractVue {
                 0,
                 64,
                 64,
-                (ant.y + 1)  * 800 / 20,
-                (ant.x + 1) * 800 / 20,
-                800 / 20,
-                800 / 20
+                (ant.y + 1) * this.cellWidth,
+                (ant.x + 1) * this.cellHeight,
+                this.cellWidth,
+                this.cellHeight
             );
         })
     }
