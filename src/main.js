@@ -84,7 +84,8 @@ class App {
             updateAnts: controller.renderAnts,
             clearAnts: controller.clearAnts,
             width: 20,
-            height: 20
+            height: 20,
+            stylePhero: 0
         });
 
         await this.environment.init();
@@ -97,9 +98,14 @@ class App {
     static changeState() {
         this.environment.changeGameState()
     }
+
+    static changeStylePhero(idStyle) {
+        this.environment.stylePhero = idStyle;
+    }
 };
 
 let started = false;
+let clickOnPhero = 0;
 App.init();
 
 let btnStart = document.getElementById("start");
@@ -110,4 +116,10 @@ btnStart.addEventListener('click', async () => {
         App.startGame();
         started = true;
     }
+})
+
+let btnPhero = document.getElementById("phero");
+btnPhero.addEventListener("click", () => {
+    clickOnPhero++;
+    App.changeStylePhero(clickOnPhero % 3);
 })

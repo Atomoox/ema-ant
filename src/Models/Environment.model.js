@@ -11,6 +11,7 @@ export default class Environment {
     constructor({
         width = 10,
         height = 10,
+        stylePhero = 0,
         updateGrid,
         updateAnts,
         clearAnts,
@@ -21,6 +22,7 @@ export default class Environment {
 
         this.width = width;
         this.height = height;
+        this.stylePhero = stylePhero;
         this.cells = new Array(this.width).fill(null).map(() => new Array(this.height).fill(null));
         this.startX = 0;
         this.startY = 0;
@@ -137,7 +139,7 @@ export default class Environment {
         this._generateMap();
         this._spawnObjectives();
         for (let i = 0; i < this._initProcessNb; i++) {
-            this._updateGrid(this.cells);
+            this._updateGrid(this.cells, this.stylePhero);
             await pause(1000 / 60);
         }
     }
@@ -159,7 +161,7 @@ export default class Environment {
 
     async gameLoop() {
         while (this.state === 'started') {
-            this._updateGrid(this.cells);
+            this._updateGrid(this.cells, this.stylePhero);
             this._updateAnts(this.ants);
             await pause(1000 / 60);
             this.ants.forEach(ant => ant.move());

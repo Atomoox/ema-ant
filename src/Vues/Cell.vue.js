@@ -3,12 +3,13 @@ import Picture from "../Models/Picture.model.js";
 import { rng } from "../utils.js";
 
 export default class CellVue extends AbstractVue {
-    constructor(cellModel, images, cellWidth, cellHeight) {
+    constructor(cellModel, images, cellWidth, cellHeight, maxPhero) {
         super();
         this.cellModel = cellModel;
         this.images = images;
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
+        this.maxPhero = maxPhero;
     }
 
     getAssetPerCellType() {
@@ -48,7 +49,7 @@ export default class CellVue extends AbstractVue {
         return this.cellModel.getType();
     }
 
-    render() {
+    render(stylePhero) {
         let pictures = this.getAssetPerCellType();
 
         pictures.forEach(picture => {
@@ -66,12 +67,27 @@ export default class CellVue extends AbstractVue {
         });
 
         if (this.getType() === "Free") {
-            this.canvasContext.fillText(
-                (Math.round(this.cellModel.getQty() * 1000) / 1000).toFixed(3),
-                this.cellModel.y * this.cellHeight + this.cellHeight / 5,
-                this.cellModel.x * this.cellWidth + this.cellWidth / 2
-            );
-
+            switch (stylePhero) {
+                case 0:
+                    this.canvasContext.fillText(
+                        this.cellModel.getQty().toFixed(3),
+                        this.cellModel.y * this.cellHeight + this.cellHeight / 5,
+                        this.cellModel.x * this.cellWidth + this.cellWidth / 2
+                    );
+                    break;
+            
+                case 1:
+                    this.canvasContext.beginPath();
+                    this.canvasContext.arc(
+                        this.cellModel.y * this.cellHeight + this.cellHeight / 2,
+                        this.cellModel.x * this.cellWidth + this.cellWidth / 2,
+                        (this.cellWidth / 2) * (this.cellModel.getQty() < 0 ? 0 : (this.cellModel.getQty() / this.maxPhero)),
+                        0,
+                        2 * Math.PI
+                    );
+                    this.canvasContext.stroke()
+                    break;
+            }
         }
     }
 }
