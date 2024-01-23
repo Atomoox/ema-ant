@@ -71,7 +71,7 @@ export default class Environment {
 
     _spawnAnts() {
         this.ants = [];
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 20; i++) {
             this.ants.push(new Ant({
                 x: this.startX,
                 y: this.startY,

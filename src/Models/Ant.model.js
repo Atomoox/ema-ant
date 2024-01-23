@@ -13,6 +13,7 @@ export default class Ant {
     }) {
         this.x = x;
         this.y = y;
+        this.startPosition = {x, y};
         this.getNeightoors = getNeightbors;
         this.getCells = getCells;
         this.direction = 0;
@@ -27,7 +28,6 @@ export default class Ant {
     }
 
     _getDirection() {
-        console.log(this.current)
         if (this.x < this.current.x) {
             return 0;
         } else if (this.x > this.current.x) {
@@ -96,15 +96,19 @@ export default class Ant {
         }
 
         if (this.current.getType() === 'Objective') {
+            this.current.setQty(this.current.getQty() - 0.1);
             this.hasFood = true;
             this.backPath = astar(
-                this.getCells(),
-                this.current,
-                this.path[0],
-                this.path
-            )
+                [...this.getCells()],
+                {...this.current},
+                this.startPosition,
+                [...this.path, this.startPosition]
+            ) ?? [];
 
-            this.backPath.push(this.path[0]);
+            this._spreadPheromone(this.backPath);
+
+            this.backPath.push(this.startPosition);
+
             const allCells = this.getCells();
             this.backPath.forEach(cell => {
                 allCells[cell.x][cell.y].setIsSelected(true);
@@ -130,11 +134,15 @@ export default class Ant {
         }, { proba: 0 })
     }
 
-    spreadPheromone() {
-        const amount = pheromoneRate / this.path.length;
-        this.path.forEach(cell => {
-            cell.addQty(amount);
-        })
+    _spreadPheromone(path) {
+        const amount = this.pheromoneRate / this.path.length;
+        const allCells = this.getCells();
+
+        path.forEach(cell => {
+            if (allCells[cell.x][cell.y].getType() === 'Free') {
+                allCells[cell.x][cell.y].addQty(amount);
+            }
+        });
     }
 
     forgetPath() { this.path = []; }

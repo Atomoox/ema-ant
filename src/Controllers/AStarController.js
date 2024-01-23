@@ -1,5 +1,8 @@
 export function astar(matrix, start, destination, allowedCoordinates) {
-    // Define a Node class to represent each point in the matrix
+    console.log(matrix);
+    console.log(start);
+    console.log(destination);
+    console.log(allowedCoordinates);
     class Node {
         constructor(x, y, g = 0, h = 0) {
             this.x = x;
@@ -23,7 +26,7 @@ export function astar(matrix, start, destination, allowedCoordinates) {
             x < matrix.length &&
             y >= 0 &&
             y < matrix[0].length &&
-            (allowedCoordinates.length === 0 || allowedCoordinates.some(coord => matrix[x][y].getType() === matrix[coord.x][coord.y].getType()))
+            (allowedCoordinates.length === 0 || allowedCoordinates.some((coord) => coord.x === x && coord.y === y))
         );
     }
 
@@ -34,6 +37,8 @@ export function astar(matrix, start, destination, allowedCoordinates) {
     // Initialize the open and closed lists
     const openList = [startNode];
     const closedList = [];
+
+    console.log(openList)
 
     while (openList.length > 0) {
         // Find the node with the lowest total cost in the open list
@@ -47,7 +52,7 @@ export function astar(matrix, start, destination, allowedCoordinates) {
 
         // Check if the current node is the destination
         if (currentNode.x === destinationNode.x && currentNode.y === destinationNode.y) {
-            // Reconstruct the path
+            console.log('FOUND')
             const path = [];
             let current = currentNode;
             while (current !== null) {
@@ -57,7 +62,6 @@ export function astar(matrix, start, destination, allowedCoordinates) {
             return path;
         }
 
-        // Generate neighboring nodes
         const neighbors = [
             { x: currentNode.x - 1, y: currentNode.y },
             { x: currentNode.x + 1, y: currentNode.y },
@@ -94,6 +98,6 @@ export function astar(matrix, start, destination, allowedCoordinates) {
             }
         }
     }
-
+    console.log('RETURNING NULL :D')
     return null;
 }
