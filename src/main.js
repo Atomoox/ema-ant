@@ -87,7 +87,7 @@ class App {
             height: 20
         });
 
-        await environment.startGame();
+        await environment.init();
     }
 };
 

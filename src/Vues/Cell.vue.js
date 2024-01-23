@@ -71,6 +71,7 @@ export default class CellVue extends AbstractVue {
                 this.cellModel.y * this.cellHeight + this.cellHeight / 5,
                 this.cellModel.x * this.cellWidth + this.cellWidth / 2
             );
+
         }
     }
 }

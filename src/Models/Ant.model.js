@@ -22,7 +22,8 @@ export default class Ant {
         this.current = {x: x, y: y};
         this.explorationRate = Math.random();
         this.hasFood = false;
-        this.pheromoneRate = Math.random();
+        this.pheromoneRate = 0.5;
+        this.toBeSpread = [];
 
         this.forgetPath = this.forgetPath.bind(this);
     }
@@ -82,6 +83,9 @@ export default class Ant {
             this.hasFood = false;
             this.current = this.path.shift();
             this.forgetPath();
+            this.backPath.shift();
+            this._spreadPheromone(this.toBeSpread);
+            this.path.push(this.current);
             return;
         }
         this.direction = this._getDirection();
@@ -102,10 +106,10 @@ export default class Ant {
                 [...this.getCells()],
                 {...this.current},
                 this.startPosition,
-                [...this.path, this.startPosition]
+                [this.startPosition, ...this.path]
             ) ?? [];
 
-            this._spreadPheromone(this.backPath);
+            this.toBeSpread = [...this.backPath];
 
             this.backPath.push(this.startPosition);
 
@@ -125,22 +129,32 @@ export default class Ant {
         }));
 
         return probas.reduce((acc, { neightbor, proba }) => {
+            if (neightbor.getType() === 'Objective') {
+                return { neightbor, proba };
+            }
+
+            if (acc?.neightbor && acc.neightbor.getType() === 'Objective') {
+                return acc;
+            }
+
             if (proba > acc.proba) {
                 return { neightbor, proba };
-            } else if (proba === acc.proba && Math.random() > 0.5) {
+            } else if (proba === acc.proba && rng(0, 1) === 1) {
                 return { neightbor, proba };
             }
             return acc;
-        }, { proba: 0 })
+        }, { proba: 0 });
     }
 
     _spreadPheromone(path) {
-        const amount = this.pheromoneRate / this.path.length;
         const allCells = this.getCells();
 
-        path.forEach(cell => {
-            if (allCells[cell.x][cell.y].getType() === 'Free') {
-                allCells[cell.x][cell.y].addQty(amount);
+        path.forEach((cell, index) => {
+            const foundCell = allCells[cell.x][cell.y];
+            if (foundCell.getType() === 'Free' && foundCell?.addQty) {
+                allCells[cell.x][cell.y].addQty(
+                    this.pheromoneRate / index
+                );
             }
         });
     }
