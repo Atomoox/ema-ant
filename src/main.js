@@ -61,14 +61,12 @@ class App {
     static async run() {
         const images = await this.loadImages();
 
-        console.log(images)
-
         const gridVue = new GridVue({
             width: 800,
             height: 800,
             cellLines: 20,
             cellColumns: 20,
-            images
+            images: images
         });
 
         const antVue = new AntVue({
