@@ -25,6 +25,8 @@ export default class Environment {
         this.startX = 0;
         this.startY = 0;
 
+        this._initProcessNb = 5;
+
         this.getNeighbors = this.getNeighbors.bind(this);
         this.getCells = this.getCells.bind(this);
     }
@@ -71,7 +73,7 @@ export default class Environment {
 
     _spawnAnts() {
         this.ants = [];
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i <20; i++) {
             this.ants.push(new Ant({
                 x: this.startX,
                 y: this.startY,
@@ -91,6 +93,16 @@ export default class Environment {
             if (this.cells[x][y].getType() == "Free") {
                 this.cells[x][y] = new Objective(x, y);
                 objectives++;
+            }
+        }
+    }
+
+    _evaporatePheromone() {
+        for (let row of this.cells) {
+            for (let cell of row) {
+                if (cell.getType() === 'Free' && cell.evaporate) {
+                    cell.evaporate();
+                }
             }
         }
     }
@@ -121,10 +133,16 @@ export default class Environment {
         return neighbors.filter(cell => cell.getType() !== 'Obstacle' && cell.getType() !== 'Start');
     }
 
-    startGame() {
-        this.state = 'started';
+    init() {
         this._generateMap();
         this._spawnObjectives();
+        for (let i = 0; i < this._initProcessNb; i++) {
+            this._updateGrid(this.cells);
+        }
+    }
+
+    startGame() {
+        this.state = 'started';
         this._spawnAnts();
         this.gameLoop();
     }
@@ -143,6 +161,7 @@ export default class Environment {
             this._updateAnts(this.ants);
             await pause(1000 / 60);
             this.ants.forEach(ant => ant.move());
+            this._evaporatePheromone();
 
         }
     }
