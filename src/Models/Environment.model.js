@@ -133,11 +133,12 @@ export default class Environment {
         return neighbors.filter(cell => cell.getType() !== 'Obstacle' && cell.getType() !== 'Start');
     }
 
-    init() {
+    async init() {
         this._generateMap();
         this._spawnObjectives();
         for (let i = 0; i < this._initProcessNb; i++) {
             this._updateGrid(this.cells);
+            await pause(1000 / 60);
         }
     }
 

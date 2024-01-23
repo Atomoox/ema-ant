@@ -79,7 +79,7 @@ class App {
             clearAnts: antVue.clearCurrentAnt,
         });
 
-        environment = new Environment({
+        this.environment = new Environment({
             updateGrid: controller.renderGrid,
             updateAnts: controller.renderAnts,
             clearAnts: controller.clearAnts,
@@ -87,11 +87,27 @@ class App {
             height: 20
         });
 
-        await environment.init();
+        await this.environment.init();
+    }
+
+    static startGame() {
+        this.environment.startGame();
+    }
+
+    static changeState() {
+        this.environment.changeGameState()
     }
 };
 
+let started = false;
+App.init();
+
 let btnStart = document.getElementById("start");
-btnStart.addEventListener('click', () => {
-    
+btnStart.addEventListener('click', async () => {
+    if (started) {
+        App.changeState();
+    } else {
+        App.startGame();
+        started = true;
+    }
 })
