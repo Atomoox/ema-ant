@@ -20,9 +20,9 @@ export default class Ant {
         this.path = [{x, y}];
         this.backPath = [];
         this.current = {x: x, y: y};
-        this.explorationRate = Math.random();
+        this.explorationRate = 0.05;
         this.hasFood = false;
-        this.pheromoneRate = 0.5;
+        this.pheromoneRate = 3;
         this.toBeSpread = [];
 
         this.forgetPath = this.forgetPath.bind(this);
@@ -122,38 +122,39 @@ export default class Ant {
 
     _chooseNextMove() {
         let neightbors = this.getNeightoors(this.x, this.y);
-        const probSum = neightbors.reduce((acc, neightbor) => acc + this.explorationRate + neightbor.getQty(), 0);
+        const probSum = neightbors.reduce((acc, neightbor) => acc + this.explorationRate + !this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0 + neightbor.getQty(), 0);
         const probas = neightbors.map(neightbor => ({
             neightbor,
-            proba: (this.explorationRate + neightbor.getQty()) / probSum
+            proba: (this.explorationRate + neightbor.getQty() + this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0) / probSum
         }));
 
-        return probas.reduce((acc, { neightbor, proba }) => {
-            if (neightbor.getType() === 'Objective') {
-                return { neightbor, proba };
-            }
+        const objective = probas.find(({neightbor}) => neightbor.getType() === 'Objective');
 
-            if (acc?.neightbor && acc.neightbor.getType() === 'Objective') {
-                return acc;
-            }
+        if (objective) {
+            return objective;
+        }
 
-            if (proba > acc.proba) {
-                return { neightbor, proba };
-            } else if (proba === acc.proba && rng(0, 1) === 1) {
-                return { neightbor, proba };
+        const shuffled = probas.sort(() => Math.random() - 0.5);
+
+        let probaSum = 0;
+
+        for (let i = 0; i < shuffled.length; i++) {
+            probaSum += shuffled[i].proba;
+            if (Math.random() < probaSum) {
+                return shuffled[i];
             }
-            return acc;
-        }, { proba: 0 });
+        }
     }
 
     _spreadPheromone(path) {
         const allCells = this.getCells();
+        const amount = this.pheromoneRate / path.length;
 
         path.forEach((cell, index) => {
             const foundCell = allCells[cell.x][cell.y];
             if (foundCell.getType() === 'Free' && foundCell?.addQty) {
                 allCells[cell.x][cell.y].addQty(
-                    this.pheromoneRate / index
+                    amount / (index / 10)
                 );
             }
         });

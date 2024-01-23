@@ -4,6 +4,7 @@ import Free from "./Free.model.js";
 import Obstacle from "./Obstacle.model.js";
 import Ant from "./Ant.model.js";
 import Objective from "./Objective.model.js";
+import Timer from "./Timer.model.js";
 
 export default class Environment {
     state = 'stopped';
@@ -15,10 +16,12 @@ export default class Environment {
         updateGrid,
         updateAnts,
         clearAnts,
+        updateTimer,
     }) {
         this._updateGrid = updateGrid;
         this._updateAnts = updateAnts;
         this._clearAnts = clearAnts;
+        this._updateTimer = updateTimer;
 
         this.width = width;
         this.height = height;
@@ -75,7 +78,7 @@ export default class Environment {
 
     _spawnAnts() {
         this.ants = [];
-        for (let i = 0; i <20; i++) {
+        for (let i = 0; i < 20; i++) {
             this.ants.push(new Ant({
                 x: this.startX,
                 y: this.startY,
@@ -146,6 +149,7 @@ export default class Environment {
 
     startGame() {
         this.state = 'started';
+        this.timer = new Timer();
         this._spawnAnts();
         this.gameLoop();
     }
@@ -161,6 +165,15 @@ export default class Environment {
 
     async gameLoop() {
         while (this.state === 'started') {
+            const isStillObjectives = this.cells.some((row) => row.some(cell => cell.getType() === 'Objective'));
+
+            if (!isStillObjectives) {
+                this.state = 'stopped';
+                this._clearAnts();
+                return;
+            };
+
+            this._updateTimer(this.timer.getElapsedTime());
             this._updateGrid(this.cells, this.stylePhero);
             this._updateAnts(this.ants);
             await pause(1000 / 60);

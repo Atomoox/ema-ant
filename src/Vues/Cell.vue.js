@@ -1,6 +1,6 @@
 import AbstractVue from "./AbstractVue.js";
 import Picture from "../Models/Picture.model.js";
-import { rng } from "../utils.js";
+import {getColorCode, rng} from "../utils.js";
 
 export default class CellVue extends AbstractVue {
     constructor(cellModel, images, cellWidth, cellHeight, maxPhero) {
@@ -67,6 +67,7 @@ export default class CellVue extends AbstractVue {
         });
 
         if (this.getType() === "Free") {
+            this.canvasContext.fillStyle = getColorCode(this.cellModel.getQty() * 10);
             switch (stylePhero) {
                 case 0:
                     this.canvasContext.fillText(

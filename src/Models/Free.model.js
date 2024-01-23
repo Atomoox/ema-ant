@@ -15,6 +15,6 @@ export default class Free extends CellModel {
     addQty(amount) { this._qty += amount; }
 
     evaporate() {
-        this._qty = this._qty > 0 ? this._qty - 0.005 : 0;
+        this._qty = this._qty > 0 ? this._qty - 0.0005 : 0;
     }
 }
