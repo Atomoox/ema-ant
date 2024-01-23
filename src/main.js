@@ -3,6 +3,7 @@ import Controller from "./Controllers/Controller.js";
 import Environment from "./Models/Environment.model.js";
 import AntVue from "./Vues/Ant.vue.js";
 import {rng, waitForImageToLoad} from "./utils.js";
+import TimerVue from "./Vues/Timer.vue.js";
 
 class App {
 
@@ -73,25 +74,31 @@ class App {
             cellHeight: 800 / 20,
         });
 
+        const timerVue = new TimerVue();
+
         const controller = new Controller({
             renderGrid: gridVue.render,
             renderAnts: antVue.render,
             clearAnts: antVue.clearCurrentAnt,
         });
 
-        environment = new Environment({
+        const environment = new Environment({
             updateGrid: controller.renderGrid,
             updateAnts: controller.renderAnts,
             clearAnts: controller.clearAnts,
+            updateTimer: timerVue.render,
             width: 20,
             height: 20
         });
 
         await environment.init();
+        await environment.startGame();
     }
 };
 
+App.init()
+
 let btnStart = document.getElementById("start");
 btnStart.addEventListener('click', () => {
-    
+
 })
