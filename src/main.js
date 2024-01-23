@@ -61,8 +61,6 @@ class App {
     static async run() {
         const images = await this.loadImages();
 
-        console.log(images)
-
         const gridVue = new GridVue({
             width: 800,
             height: 800,
@@ -90,7 +88,7 @@ class App {
             height: 30
         });
 
-        await environment.startGame();
+        await environment.init();
     }
 };
 
