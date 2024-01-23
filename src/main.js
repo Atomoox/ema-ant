@@ -82,23 +82,51 @@ class App {
             clearAnts: antVue.clearCurrentAnt,
         });
 
-        const environment = new Environment({
+        this.environment = new Environment({
             updateGrid: controller.renderGrid,
             updateAnts: controller.renderAnts,
             clearAnts: controller.clearAnts,
             updateTimer: timerVue.render,
             width: 20,
-            height: 20
+            height: 20,
+            stylePhero: 0
         });
 
+        await this.environment.init();
+    }
+
+    static startGame() {
+        this.environment.startGame();
+    }
+
+    static changeState() {
+        this.environment.changeGameState()
+    }
+
+    static changeStylePhero(idStyle) {
+        this.environment.stylePhero = idStyle;
+    }
+};
+
+let started = false;
+let clickOnPhero = 0;
+App.init();
+
+let btnStart = document.getElementById("start");
+btnStart.addEventListener('click', async () => {
+    if (started) {
+        App.changeState();
+    } else {
+        App.startGame();
+        started = true;
+    }
+})
+
+let btnPhero = document.getElementById("phero");
+btnPhero.addEventListener("click", () => {
+    clickOnPhero++;
+    App.changeStylePhero(clickOnPhero % 3);
         await environment.init();
         await environment.startGame();
     }
 };
-
-App.init()
-
-let btnStart = document.getElementById("start");
-btnStart.addEventListener('click', () => {
-
-})
