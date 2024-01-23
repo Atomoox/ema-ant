@@ -8,4 +8,6 @@ export default class Objective extends CellModel {
 
     getQty() { return this._qty; }
     setQty(newValue) { this._qty = newValue; }
+
+    getType() { return this._qty > 0 ? this.constructor.name : 'Free'; }
 }

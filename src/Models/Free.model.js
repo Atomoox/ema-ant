@@ -4,6 +4,8 @@ export default class Free extends CellModel {
     constructor(x, y, qty = 0.0) {
         super(x, y);
         this._qty = qty;
+
+        this.addQty = this.addQty.bind(this);
     }
 
     getQty() { return this._qty;  }
