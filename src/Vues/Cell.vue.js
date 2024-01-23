@@ -86,7 +86,7 @@ export default class CellVue extends AbstractVue {
                         0,
                         2 * Math.PI
                     );
-                    this.canvasContext.stroke()
+                    this.canvasContext.fill()
                     break;
             }
         }

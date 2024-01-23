@@ -126,7 +126,4 @@ let btnPhero = document.getElementById("phero");
 btnPhero.addEventListener("click", () => {
     clickOnPhero++;
     App.changeStylePhero(clickOnPhero % 3);
-        await environment.init();
-        await environment.startGame();
-    }
-};
+});
