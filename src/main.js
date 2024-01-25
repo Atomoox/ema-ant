@@ -100,7 +100,8 @@ class App {
     }
 
     static changeState() {
-        this.environment.changeGameState()
+        this.environment.changeGameState();
+        return (this.environment.state == "stopped" ? "0" : "1");
     }
 
     static changeStylePhero(idStyle) {
@@ -109,16 +110,27 @@ class App {
 };
 
 let started = false;
+let intState = 1;
 let clickOnPhero = 0;
 App.init();
 
 let btnStart = document.getElementById("start");
 btnStart.addEventListener('click', async () => {
     if (started) {
-        App.changeState();
+        intState = App.changeState();
     } else {
         App.startGame();
         started = true;
+    }
+
+    if (intState == 0) {
+        btnStart.innerHTML = "Start";
+        btnStart.classList.add("btn_start_style");
+        btnStart.classList.remove("btn_stop_style");
+    } else {
+        btnStart.innerHTML = "Stop";
+        btnStart.classList.add("btn_stop_style");
+        btnStart.classList.remove("btn_start_style");
     }
 })
 
