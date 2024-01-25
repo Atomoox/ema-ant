@@ -27,8 +27,8 @@ export default class AntVue extends AbstractVue {
                 0,
                 64,
                 64,
-                (ant.y + 1) * this.cellWidth,
-                (ant.x + 1) * this.cellHeight,
+                (ant.y) * this.cellWidth,
+                (ant.x) * this.cellHeight,
                 this.cellWidth,
                 this.cellHeight
             );

@@ -64,14 +64,14 @@ class App {
         const gridVue = new GridVue({
             width: 800,
             height: 800,
-            cellLines: 20,
-            cellColumns: 20,
+            cellLines: 18,
+            cellColumns: 18,
             images: images
         });
 
         const antVue = new AntVue({
-            cellWidth: 800 / 20,
-            cellHeight: 800 / 20,
+            cellWidth: 800 / 18,
+            cellHeight: 800 / 18,
         });
 
         const timerVue = new TimerVue();
@@ -87,8 +87,8 @@ class App {
             updateAnts: controller.renderAnts,
             clearAnts: controller.clearAnts,
             updateTimer: timerVue.render,
-            width: 20,
-            height: 20,
+            width: 18,
+            height: 18,
             stylePhero: 0
         });
 
