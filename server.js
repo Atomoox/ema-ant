@@ -7,6 +7,7 @@ const port = 8080
 app.use('/js/', express.static(path.join(__dirname, '/src')))
 
 app.use('/assets/', express.static(path.join(__dirname, '/public/assets')))
+app.use('/styles/', express.static(path.join(__dirname, '/public/styles')))
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
