@@ -7,14 +7,14 @@
 </head>
 <body>
     <div class="box">
-        <div id="menu">
+        <div>
             <div id="timer">
-                00:00:00
+                00:00
             </div>
 
             <div>
-                <input type="button" id="start" value="Start">
-                <input type="button" id="phero" value="Phéromones">
+                <button type="button" id="start" class="btn btn_start_style">Start</button>
+                <input type="button" id="phero" class="btn" value="Phéromones">
             </div>
         </div>
 
@@ -31,9 +31,45 @@
         }
 
         .box {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             align-items: center;
-            justify-content: center;
+            justify-items: center;
+
+            font-size: xx-large;
+            text-align: center;
+        }
+
+        .btn {
+            font-size: xx-large;
+            color: antiquewhite;
+
+            background-color: rgb(41, 75, 41);
+
+            width: fit-content;
+            height: fit-content;
+            
+            border-radius: 15px;
+            border-color: rgb(41, 75, 41);
+            border-width: 2px;
+            border-style: solid;
+
+            margin: 35px;
+        }
+
+        .btn_stop_style {
+            background-color: rgb(196, 64, 64);
+            border-color: rgb(196, 64, 64);
+        }
+
+        .btn_start_style {
+            background-color: rgb(61, 168, 58);
+            border-color: rgb(61, 168, 58);
+        }
+
+        #timer {
+            font-weight: bold;
+            color: antiquewhite;
         }
 
         #master_canvas {
