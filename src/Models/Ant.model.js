@@ -2,7 +2,7 @@ import {rng} from "../utils.js";
 import {astar} from "../Controllers/AStarController.js";
 
 const _fps = 60;
-const _speed = 10;
+const _speed = 5;
 
 export default class Ant {
     constructor({
@@ -20,9 +20,9 @@ export default class Ant {
         this.path = [{x, y}];
         this.backPath = [];
         this.current = {x: x, y: y};
-        this.explorationRate = 0.05;
+        this.explorationRate = Math.random();
         this.hasFood = false;
-        this.pheromoneRate = 3;
+        this.pheromoneRate = 0.7;
         this.toBeSpread = [];
 
         this.forgetPath = this.forgetPath.bind(this);
@@ -122,10 +122,10 @@ export default class Ant {
 
     _chooseNextMove() {
         let neightbors = this.getNeightoors(this.x, this.y);
-        const probSum = neightbors.reduce((acc, neightbor) => acc + this.explorationRate + !this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0 + neightbor.getQty(), 0);
+        const probSum = neightbors.reduce((acc, neightbor) => acc + this.explorationRate + !this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0 + (neightbor.getQty() * 10), 0);
         const probas = neightbors.map(neightbor => ({
             neightbor,
-            proba: (this.explorationRate + neightbor.getQty() + this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0) / probSum
+            proba: (this.explorationRate + neightbor.getQty() * 10 + this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0) / probSum
         }));
 
         const objective = probas.find(({neightbor}) => neightbor.getType() === 'Objective');
@@ -154,7 +154,7 @@ export default class Ant {
             const foundCell = allCells[cell.x][cell.y];
             if (foundCell.getType() === 'Free' && foundCell?.addQty) {
                 allCells[cell.x][cell.y].addQty(
-                    amount / (index / 10)
+                    amount
                 );
             }
         });

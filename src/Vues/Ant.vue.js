@@ -21,11 +21,6 @@ export default class AntVue extends AbstractVue {
 
     render(ants) {
         ants.forEach(ant => {
-            this.canvasContext.beginPath(); // Nouveau tracé.
-            this.canvasContext.moveTo(ant.y, ant.x);
-            this.canvasContext.lineTo(ant.y, ant.x);
-            this.canvasContext.stroke();
-
             this.canvasContext.drawImage(
                 this.image,
                 0,
