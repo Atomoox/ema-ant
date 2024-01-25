@@ -82,7 +82,7 @@ export default class CellVue extends AbstractVue {
                     this.canvasContext.arc(
                         this.cellModel.y * this.cellHeight + this.cellHeight / 2,
                         this.cellModel.x * this.cellWidth + this.cellWidth / 2,
-                        (this.cellWidth / 2) * (this.cellModel.getQty() < 0 ? 0 : (this.cellModel.getQty() / this.maxPhero)),
+                        (this.cellWidth / 2) * (this.cellModel.getQty() <= 0 ? 0 : (this.cellModel.getQty() / this.maxPhero)),
                         0,
                         2 * Math.PI
                     );
