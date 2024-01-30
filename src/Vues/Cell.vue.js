@@ -72,12 +72,12 @@ export default class CellVue extends AbstractVue {
                 qty = this.cellModel.getMaxQty();
             }
 
-            this.canvasContext.fillStyle = getColorCode(qty * 100, this.maxPhero);
+            this.canvasContext.fillStyle = getColorCode(qty * 10, this.maxPhero);
 
             switch (stylePhero) {
                 case 0:
                     this.canvasContext.fillText(
-                        qty.toFixed(3),
+                        this.cellModel.getQty().toFixed(3),
                         this.cellModel.y * this.cellHeight + this.cellHeight / 5,
                         this.cellModel.x * this.cellWidth + this.cellWidth / 2
                     );

@@ -124,24 +124,32 @@ export default class Ant {
 
     _chooseNextMove() {
         let neightbors = this.getNeightoors(this.x, this.y);
-        const probSum = neightbors.reduce((acc, neightbor) =>
-            acc +
-                (
-                    this.explorationRate +
-                    neightbor?.getQty() +
-                    !this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0
-                )
+        const probSum = neightbors.reduce((acc, neightbor) => {
+            const prob = this.explorationRate + neightbor?.getQty();
+
+            if (!this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y)) {
+                return acc + prob + 100;
+            }
+
+            console.log(!this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y));
+
+            return acc + prob;
+        }
+
         , 0);
 
-        const probas = neightbors.map(neightbor => ({
-            neightbor,
-            proba: (
-                    this.explorationRate +
-                    neightbor?.getQty() +
-                    !this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0
-                )
-                / probSum
-        }));
+        const probas = neightbors.map(neightbor => {
+            let prob = this.explorationRate + neightbor?.getQty();
+
+            if (!this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y)) {
+                prob += 100;
+            }
+
+            return {
+                neightbor,
+                proba: prob / probSum
+            }
+        });
 
         const objective = probas.find(({neightbor}) => neightbor.getType() === 'Objective');
 
