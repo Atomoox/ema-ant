@@ -6,6 +6,17 @@ import Ant from "./Ant.model.js";
 import Objective from "./Objective.model.js";
 import Timer from "./Timer.model.js";
 
+class Node {
+    constructor(x, y, g = 0, h = 0) {
+        this.x = x;
+        this.y = y;
+        this.g = g; // Cost from start to current node
+        this.h = h; // Heuristic (estimated cost from current node to destination)
+        this.f = g + h; // Total cost
+        this.parent = null;
+    }
+}
+
 export default class Environment {
     state = 'stopped';
 
@@ -34,6 +45,8 @@ export default class Environment {
 
         this.getNeighbors = this.getNeighbors.bind(this);
         this.getCells = this.getCells.bind(this);
+        this.astar = this.astar.bind(this);
+        this.isValid = this.isValid.bind(this);
     }
 
     getCells() {
@@ -83,7 +96,8 @@ export default class Environment {
                 x: this.startX,
                 y: this.startY,
                 getNeightbors: this.getNeighbors,
-                getCells: this.getCells
+                getCells: this.getCells,
+                astar: this.astar
             }));
         }
     }
@@ -181,5 +195,75 @@ export default class Environment {
             this._evaporatePheromone();
 
         }
+    }
+
+    isValid(allowedCoordinates, x, y) {
+        return (
+            x >= 0 &&
+            x < this.cells.length &&
+            y >= 0 &&
+            y < this.cells[0].length &&
+            (allowedCoordinates.length === 0 || allowedCoordinates.some((coord) => coord.x === x && coord.y === y))
+        );
+    }
+
+    calculateHeuristic(node, destination) {
+        return Math.abs(node.x - destination.x) + Math.abs(node.y - destination.y);
+    }
+
+    astar(start, destination, allowedCoordinates) {
+        const startNode = new Node(start.x, start.y);
+        const destinationNode = new Node(destination.x, destination.y);
+
+        const openList = [startNode];
+        const closedList = [];
+
+        while (openList.length > 0) {
+            const currentNode = openList.reduce((minNode, node) => (node.f < minNode.f ? node : minNode), openList[0]);
+
+            openList.splice(openList.indexOf(currentNode), 1);
+
+            closedList.push(currentNode);
+
+            if (currentNode.x === destinationNode.x && currentNode.y === destinationNode.y) {
+                const path = [];
+                let current = currentNode;
+                while (current !== null) {
+                    path.unshift({ x: current.x, y: current.y });
+                    current = current.parent;
+                }
+                return path;
+            }
+
+            const neighbors = [
+                { x: currentNode.x - 1, y: currentNode.y },
+                { x: currentNode.x + 1, y: currentNode.y },
+                { x: currentNode.x, y: currentNode.y - 1 },
+                { x: currentNode.x, y: currentNode.y + 1 },
+            ];
+
+            const validNeighbors = neighbors.filter((neighbor) => this.isValid(allowedCoordinates, neighbor.x, neighbor.y));
+
+            for (const neighbor of validNeighbors) {
+                if (closedList.some((node) => node.x === neighbor.x && node.y === neighbor.y)) {
+                    continue;
+                }
+
+                const tentativeG = currentNode.g + 1;
+
+                const existingNode = openList.find((node) => node.x === neighbor.x && node.y === neighbor.y);
+                if (!existingNode || tentativeG < existingNode.g) {
+                    if (!existingNode) {
+                        const newNode = new Node(neighbor.x, neighbor.y, tentativeG, this.calculateHeuristic(neighbor, destination));
+                        newNode.parent = currentNode;
+                        openList.push(newNode);
+                    } else {
+                        existingNode.g = tentativeG;
+                        existingNode.parent = currentNode;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

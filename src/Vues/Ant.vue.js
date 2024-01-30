@@ -32,6 +32,7 @@ export default class AntVue extends AbstractVue {
                 this.cellWidth,
                 this.cellHeight
             );
+            this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
         })
     }
 }

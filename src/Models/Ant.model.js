@@ -1,5 +1,4 @@
 import {rng} from "../utils.js";
-import {astar} from "../Controllers/AStarController.js";
 
 const _fps = 60;
 const _speed = 5;
@@ -9,12 +8,14 @@ export default class Ant {
         x = 0,
         y = 0,
         getNeightbors,
-        getCells
+        getCells,
+        astar
     }) {
         this.x = x;
         this.y = y;
         this.startPosition = {x, y};
         this.getNeightoors = getNeightbors;
+        this.astar = astar;
         this.getCells = getCells;
         this.direction = 0;
         this.path = [{x, y}];
@@ -22,7 +23,7 @@ export default class Ant {
         this.current = {x: x, y: y};
         this.explorationRate = Math.random();
         this.hasFood = false;
-        this.pheromoneRate = 0.7;
+        this.pheromoneRate = 1;
         this.toBeSpread = [];
 
         this.forgetPath = this.forgetPath.bind(this);
@@ -76,6 +77,7 @@ export default class Ant {
             this.current = this.backPath.shift();
             if (this.current) {
                 this.direction = this._getDirection();
+                this._spreadPheromone(this.current);
             }
         }
 
@@ -84,7 +86,6 @@ export default class Ant {
             this.current = this.path.shift();
             this.forgetPath();
             this.backPath.shift();
-            this._spreadPheromone(this.toBeSpread);
             this.path.push(this.current);
             return;
         }
@@ -102,12 +103,13 @@ export default class Ant {
         if (this.current.getType() === 'Objective') {
             this.current.setQty(this.current.getQty() - 0.1);
             this.hasFood = true;
-            this.backPath = astar(
-                [...this.getCells()],
+            this.backPath = this.astar(
                 {...this.current},
                 this.startPosition,
                 [this.startPosition, ...this.path]
             ) ?? [];
+
+            console.log(this.backPath);
 
             this.toBeSpread = [...this.backPath];
 
@@ -122,10 +124,23 @@ export default class Ant {
 
     _chooseNextMove() {
         let neightbors = this.getNeightoors(this.x, this.y);
-        const probSum = neightbors.reduce((acc, neightbor) => acc + this.explorationRate + !this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0 + (neightbor.getQty() * 10), 0);
+        const probSum = neightbors.reduce((acc, neightbor) =>
+            acc +
+                (
+                    this.explorationRate +
+                    neightbor?.getQty() +
+                    !this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0
+                )
+        , 0);
+
         const probas = neightbors.map(neightbor => ({
             neightbor,
-            proba: (this.explorationRate + neightbor.getQty() * 10 + this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0) / probSum
+            proba: (
+                    this.explorationRate +
+                    neightbor?.getQty() +
+                    !this.path.some(cell => cell.x === neightbor.x && cell.y === neightbor.y) ? 0.1 : 0
+                )
+                / probSum
         }));
 
         const objective = probas.find(({neightbor}) => neightbor.getType() === 'Objective');
@@ -146,18 +161,15 @@ export default class Ant {
         }
     }
 
-    _spreadPheromone(path) {
+    _spreadPheromone(cell) {
         const allCells = this.getCells();
-        const amount = this.pheromoneRate / path.length;
-
-        path.forEach((cell, index) => {
-            const foundCell = allCells[cell.x][cell.y];
-            if (foundCell.getType() === 'Free' && foundCell?.addQty) {
-                allCells[cell.x][cell.y].addQty(
-                    amount
-                );
-            }
-        });
+        const amount = this.pheromoneRate / (this.toBeSpread.length - this.backPath.length);
+        const foundCell = allCells[cell.x][cell.y];
+        if (foundCell.getType() === 'Free' && foundCell?.addQty) {
+            allCells[cell.x][cell.y].addQty(
+                amount
+            );
+        }
     }
 
     forgetPath() { this.path = []; }
