@@ -67,11 +67,17 @@ export default class CellVue extends AbstractVue {
         });
 
         if (this.getType() === "Free") {
-            this.canvasContext.fillStyle = getColorCode(this.cellModel.getQty() * 10);
+            let qty = this.cellModel.getQty();
+            if (this.cellModel && this.cellModel?.getMaxQty) {
+                qty = this.cellModel.getMaxQty();
+            }
+
+            this.canvasContext.fillStyle = getColorCode(qty * 100, this.maxPhero);
+
             switch (stylePhero) {
                 case 0:
                     this.canvasContext.fillText(
-                        this.cellModel.getQty().toFixed(3),
+                        qty.toFixed(3),
                         this.cellModel.y * this.cellHeight + this.cellHeight / 5,
                         this.cellModel.x * this.cellWidth + this.cellWidth / 2
                     );
@@ -82,7 +88,7 @@ export default class CellVue extends AbstractVue {
                     this.canvasContext.arc(
                         this.cellModel.y * this.cellHeight + this.cellHeight / 2,
                         this.cellModel.x * this.cellWidth + this.cellWidth / 2,
-                        (this.cellWidth / 2) * (this.cellModel.getQty() <= 0 ? 0 : (this.cellModel.getQty() / this.maxPhero)),
+                        (this.cellWidth / 2) * (qty <= 0 ? 0 : (qty / this.maxPhero)),
                         0,
                         2 * Math.PI
                     );
