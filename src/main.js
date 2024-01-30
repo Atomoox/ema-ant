@@ -61,32 +61,13 @@ class App {
     static async init() {
         const images = await this.loadImages();
 
-        const gridVue = new GridVue({
-            width: 800,
-            height: 800,
-            cellLines: 18,
-            cellColumns: 18,
-            images: images
-        });
-
-        const antVue = new AntVue({
-            cellWidth: 800 / 18,
-            cellHeight: 800 / 18,
-        });
-
-        const timerVue = new TimerVue();
-
-        const controller = new Controller({
-            renderGrid: gridVue.render,
-            renderAnts: antVue.render,
-            clearAnts: antVue.clearCurrentAnt,
-        });
+        const controller = new Controller({ images });
 
         this.environment = new Environment({
             updateGrid: controller.renderGrid,
             updateAnts: controller.renderAnts,
             clearAnts: controller.clearAnts,
-            updateTimer: timerVue.render,
+            updateTimer: controller.renderTimer,
             width: 18,
             height: 18,
             stylePhero: 0
